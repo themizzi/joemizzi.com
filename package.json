@@ -1,4 +1,5 @@
 {
+  "name": "joemizzi.com",
   "type": "module",
   "scripts": {
     "test": "playwright test",
@@ -8,11 +9,10 @@
     "lint:html": "htmlhint '**/*.html'",
     "lint:md": "markdownlint-cli2 'content/**/*.md'",
     "lint": "npm run lint:js && npm run lint:css && npm run lint:html && npm run lint:md",
-    "prepare": "husky",
-    "postinstall": "if playwright --version > /dev/null 2>&1; then playwright install chromium; fi"
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@playwright/test": "^1.53.1",
+    "@playwright/test": "1.59.1",
     "@types/node": "24.0.3",
     "@davidsneighbour/markdownlint-config": "^2025.0.1",
     "@eslint/compat": "^1.2.5",

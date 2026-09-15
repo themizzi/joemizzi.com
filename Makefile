@@ -16,9 +16,11 @@ ENVIRONMENT = development
 RCLONE_CONFIG = ./rclone.conf
 WRANGLER = npx wrangler
 BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
+PLAYWRIGHT_WS_ENDPOINT = ws://playwright:3000/
+PLAYWRIGHT_TEST_SERVER_HOST = dev
 
 # Targets
-.PHONY: all clean download-assets upload-assets pre-build build serve serve-dev help deploy vid
+.PHONY: all clean download-assets upload-assets pre-build build serve serve-dev help deploy playwright-up playwright-down test vid
 .SILENT: vid
 
 all: build ## Build the project.
@@ -54,8 +56,14 @@ help: ## Show this help.
 	@echo "Available commands:"; \
 	    grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-20s\033[0m %s\n", $$1, $$2}'
 
-test: node_modules ## Run the test suite.
-	npm test
+playwright-up: ## Start the Playwright browser service.
+	docker compose up --detach --wait playwright
+
+playwright-down: ## Stop the Playwright browser service.
+	docker compose stop playwright
+
+test: node_modules playwright-up ## Run the test suite.
+	PW_TEST_CONNECT_WS_ENDPOINT=$(PLAYWRIGHT_WS_ENDPOINT) PLAYWRIGHT_TEST_SERVER_HOST=$(PLAYWRIGHT_TEST_SERVER_HOST) npm test
 
 deploy:
 	$(WRANGLER) pages deploy --project-name joemizzi --branch $(BRANCH) ./public

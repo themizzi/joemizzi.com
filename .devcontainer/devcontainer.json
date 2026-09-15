@@ -10,22 +10,13 @@
 		"DIGITALOCEAN_ACCESS_TOKEN": "${localEnv:DIGITALOCEAN_ACCESS_TOKEN}",
 		"SSH_AUTH_SOCK": "/ssh-agent"
 	},
-	"build": {
-		"dockerfile": "Dockerfile",
-		"target": "dev",
-		"args": {
-			// Update VARIANT to pick hugo variant.
-			// Example variants: hugo, hugo_extended
-			// Rebuild the container if it already exists to update.
-			"VARIANT": "hugo",
-			// Update VERSION to pick a specific hugo version.
-			// Example versions: latest, 0.73.0, 0,71.1
-			// Rebuild the container if it already exists to update.
-			"VERSION": "latest",
-			// Update NODE_VERSION to pick the Node.js version: 12, 14
-			"NODE_VERSION": "24"
-		}
-	},
+	"dockerComposeFile": "../compose.yaml",
+	"service": "dev",
+	"workspaceFolder": "/workspace",
+	"runServices": [
+		"playwright"
+	],
+	"shutdownAction": "none",
 	"features": {
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
 			"version": "latest",

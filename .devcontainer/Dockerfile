@@ -28,9 +28,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     ripgrep \
     && rm -rf /var/lib/apt/lists/*
 
-# Install playwright dependencies
-RUN npx playwright install-deps
-
 # Install starship prompt
 RUN sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --bin-dir /usr/local/bin -y
 
