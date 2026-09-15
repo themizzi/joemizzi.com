@@ -6,7 +6,7 @@ services:
       context: .devcontainer
       target: dev
       args:
-        NODE_VERSION: "24"
+        NODE_VERSION: "24.21.0"
         HUGO_VARIANT: hugo
         HUGO_VERSION: 0.165.0
     command: sleep infinity
