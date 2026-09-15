@@ -11,6 +11,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 export const SITE_SOURCE_DIR = path.join(__dirname, '..');
 export const DEBUG_MODE = process.env.DEBUG_TESTS === 'true';
+const REMOTE_BROWSER = Boolean(process.env.PW_TEST_CONNECT_WS_ENDPOINT);
+export const TEST_SERVER_HOST = REMOTE_BROWSER
+  ? process.env.PLAYWRIGHT_TEST_SERVER_HOST || 'dev'
+  : 'localhost';
+const TEST_SERVER_BIND = REMOTE_BROWSER ? '0.0.0.0' : '127.0.0.1';
 
 export interface TestSiteConfig {
   params?: string;
@@ -109,8 +114,9 @@ export async function createTestSite(config: TestSiteConfig = {}): Promise<TestS
   fs.mkdirSync(path.join(tmpDir, 'config', '_default'));
 
   const port = await getPort();
+  const baseURL = `http://${TEST_SERVER_HOST}:${port}`;
   const defaultConfig = {
-    baseURL: `http://localhost:${port}`,
+    baseURL,
     languageCode: 'en-us',
     title: 'Theme Test Site',
   };
@@ -214,7 +220,8 @@ export async function startHugoServer(testSite: TestSite): Promise<ServerControl
       '--disableFastRender',
       '--ignoreCache',
       '--port', testSite.port.toString(),
-      '--bind', '127.0.0.1',
+      '--bind', TEST_SERVER_BIND,
+      '--baseURL', `http://${TEST_SERVER_HOST}:${testSite.port}`,
     ], {
       cwd: testSite.tmpDir,
       stdio: 'pipe',
@@ -233,7 +240,7 @@ export async function startHugoServer(testSite: TestSite): Promise<ServerControl
           serverStarted = true;
           resolve({
             port: testSite.port,
-            baseURL: `http://localhost:${testSite.port}`,
+            baseURL: `http://${TEST_SERVER_HOST}:${testSite.port}`,
             stop: () => {
               server.kill();
             },

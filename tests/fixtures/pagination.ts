@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { ServerFixture } from '../fixtures.js';
+import { ServerFixture, TEST_SERVER_HOST } from '../fixtures.js';
 
 export interface PaginatedPageOptions {
   pagerSize?: number;
@@ -19,7 +19,7 @@ export class PaginatedPageFixture {
 
     // Generate Hugo site configuration with pagination settings
     const hugoConfig = `
-baseURL = "http://localhost"
+    baseURL = "http://${TEST_SERVER_HOST}"
 title = "Test Site"
 languageCode = "en-us"
 
