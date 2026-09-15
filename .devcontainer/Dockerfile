@@ -17,7 +17,6 @@ RUN export ARCH=$(uname -m | sed -e 's/aarch64/arm64/' -e 's/x86_64/amd64/') \
 RUN apt-get update && apt-get install --no-install-recommends -y \
     stow \
     zsh-antigen \
-    awscli \
     inotify-tools \
     rclone \
     ffmpeg \
