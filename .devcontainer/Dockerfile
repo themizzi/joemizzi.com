@@ -14,22 +14,12 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     ca-certificates \
     curl \
     git \
-    gnupg \
     make \
     sudo \
-    wget \
-    xz-utils \
     zsh \
-    stow \
-    zsh-antigen \
-    inotify-tools \
     rclone \
-    ffmpeg \
     pup \
     jq \
-    gh \
-    tidy \
-    ripgrep \
     && rm -rf /var/lib/apt/lists/*
 
 # Match the standard devcontainer user so the bind-mounted workspace remains writable.
@@ -45,11 +35,11 @@ RUN set -eux; \
         arm64) node_arch='arm64' ;; \
         *) echo "Unsupported Node architecture: $(dpkg --print-architecture)" >&2; exit 1 ;; \
     esac; \
-    curl -fsSLO "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${node_arch}.tar.xz"; \
+    curl -fsSLO "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${node_arch}.tar.gz"; \
     curl -fsSLO "https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt"; \
-    grep " node-v${NODE_VERSION}-linux-${node_arch}.tar.xz$" SHASUMS256.txt | sha256sum -c -; \
-    tar -xJf "node-v${NODE_VERSION}-linux-${node_arch}.tar.xz" -C /usr/local --strip-components=1 --no-same-owner; \
-    rm "node-v${NODE_VERSION}-linux-${node_arch}.tar.xz" SHASUMS256.txt; \
+    grep " node-v${NODE_VERSION}-linux-${node_arch}.tar.gz$" SHASUMS256.txt | sha256sum -c -; \
+    tar -xzf "node-v${NODE_VERSION}-linux-${node_arch}.tar.gz" -C /usr/local --strip-components=1 --no-same-owner; \
+    rm "node-v${NODE_VERSION}-linux-${node_arch}.tar.gz" SHASUMS256.txt; \
     node --version; \
     npm --version
 
@@ -60,7 +50,7 @@ RUN set -eux; \
         arm64) hugo_arch='arm64' ;; \
         *) echo "Unsupported Hugo architecture: $(dpkg --print-architecture)" >&2; exit 1 ;; \
     esac; \
-    wget -q "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO_VARIANT}_${HUGO_VERSION}_linux-${hugo_arch}.deb"; \
+    curl -fsSLO "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO_VARIANT}_${HUGO_VERSION}_linux-${hugo_arch}.deb"; \
     dpkg -i "${HUGO_VARIANT}_${HUGO_VERSION}_linux-${hugo_arch}.deb"; \
     rm "${HUGO_VARIANT}_${HUGO_VERSION}_linux-${hugo_arch}.deb"
 
