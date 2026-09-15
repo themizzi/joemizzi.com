@@ -14,18 +14,8 @@ RUN export ARCH=$(uname -m | sed -e 's/aarch64/arm64/' -e 's/x86_64/amd64/') \
     && dpkg -i ${HUGO_VARIANT}_${HUGO_VERSION}_linux-${ARCH}.deb \
     && rm ${HUGO_VARIANT}_${HUGO_VERSION}_linux-${ARCH}.deb
 
-# Install gh cli repo
-RUN sudo mkdir -p -m 755 /etc/apt/keyrings \
-	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-	&& sudo apt update \
-	&& sudo apt install gh -y
-
 # Install additional packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install --no-install-recommends -y \
     stow \
     zsh-antigen \
     awscli \
@@ -35,9 +25,9 @@ RUN apt-get update && apt-get install -y \
     pup \
     jq \
     gh \
-    openjdk-21-jre \
     tidy \
-    ripgrep
+    ripgrep \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Git Credential Manager and use Git's in-memory cache store, which
 # works in this headless devcontainer without requiring a desktop keychain.
@@ -52,9 +42,6 @@ RUN arch="$(dpkg --print-architecture)" \
     && rm /tmp/gcm.deb \
     && git-credential-manager configure --system \
     && git config --system credential.credentialStore cache
-
-# Install vnu
-RUN npm install -g vnu-jar
 
 # Install playwright dependencies
 RUN npx playwright install-deps
@@ -77,4 +64,3 @@ USER node
 
 # Install opencode
 RUN curl -fsSL https://opencode.ai/install | bash
- 
