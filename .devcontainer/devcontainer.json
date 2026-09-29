@@ -1,12 +1,12 @@
 {
 	"name": "Hugo (Community)",
 	"mounts": [
-		"source=themizzi-github-io-zsh-history,target=/home/node/.zsh,type=volume,consistency=cached",
-		"source=themizzi-joemizzi.com-opencode,target=/home/node/.local/share/opencode,type=volume,consistency=bind"
+		"source=${localWorkspaceFolderBasename}-local,target=/home/node/.local,type=volume,consistency=bind",
+		"source=${localWorkspaceFolderBasename}-config,target=/home/node/.config,type=volume,consistency=bind"
 	],
 	"remoteEnv": {
 		"DIGITALOCEAN_ACCESS_TOKEN": "${localEnv:DIGITALOCEAN_ACCESS_TOKEN}",
-		"SSH_AUTH_SOCK": "/ssh-agent"
+		"HISTFILE": "/home/node/.local/zsh/.zsh_history"
 	},
 	"dockerComposeFile": "../compose.yaml",
 	"service": "dev",

@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     rclone \
     pup \
     jq \
+    openssh-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Match the standard devcontainer user so the bind-mounted workspace remains writable.
@@ -54,19 +55,31 @@ RUN set -eux; \
     dpkg -i "${HUGO_VARIANT}_${HUGO_VERSION}_linux-${hugo_arch}.deb"; \
     rm "${HUGO_VARIANT}_${HUGO_VERSION}_linux-${hugo_arch}.deb"
 
-# Install starship prompt
-RUN sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --bin-dir /usr/local/bin -y
-
-# ZSH storage
-RUN mkdir -p /home/node/.zsh /workspace \
-    && chown -R node:node /home/node/.zsh /workspace
-VOLUME [ "/home/node/.zsh" ]
-WORKDIR /workspace
-
 # Hugo dev server port
 EXPOSE 1313
 
 USER node
 
+WORKDIR /workspace
+
+RUN mkdir -p /home/node/.local /home/node/.config \
+    && chown -R node:node /home/node/.local /home/node/.config
+
+# Install oh-my-zsh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" -- --unattended \
+    && cat ~/.zshrc \
+    && git clone https://github.com/zsh-users/zsh-history-substring-search.git /home/node/.local/zsh/plugins/zsh-history-substring-search \
+    && echo 'source /home/node/.local/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh' >> /home/node/.zshrc \
+    && echo 'bindkey "^[[A" history-substring-search-up' >> /home/node/.zshrc \
+    && echo 'bindkey "^[[B" history-substring-search-down' >> /home/node/.zshrc \
+    && git clone https://github.com/zsh-users/zsh-autosuggestions.git /home/node/.local/zsh/plugins/zsh-autosuggestions \
+    && echo 'source /home/node/.local/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /home/node/.zshrc \
+    && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /home/node/.local/zsh/plugins/zsh-syntax-highlighting \
+    && echo 'source /home/node/.local/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' >> /home/node/.zshrc \
+    && git clone https://github.com/zsh-users/zsh-completions.git /home/node/.local/zsh/plugins/zsh-completions \
+    && echo 'source /home/node/.local/zsh/plugins/zsh-completions/zsh-completions.plugin.zsh' >> /home/node/.zshrc
+
 # Install opencode
 RUN curl -fsSL https://opencode.ai/install | bash
+
+VOLUME ["/home/node/.local", "/home/node/.config"]
