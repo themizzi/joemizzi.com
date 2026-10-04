@@ -1,1 +1,6 @@
+if [ -z "${AWS_ACCESS_KEY_ID:-}" ] || [ -z "${AWS_SECRET_ACCESS_KEY:-}" ]; then
+    echo "Skipping asset upload: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required."
+    exit 0
+fi
+
 make upload-assets
