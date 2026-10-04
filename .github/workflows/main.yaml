@@ -72,7 +72,7 @@ jobs:
           imageTag: ${{ env.IMAGE_TAG }}
           cacheFrom: ${{ env.IMAGE_NAME }}
           push: never
-          runCmd: make build
+          runCmd: make build && make test
 
       - name: Upload public folder
         uses: actions/upload-artifact@v4
@@ -80,31 +80,12 @@ jobs:
           name: public
           path: public
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
-
-      - name: Test site
-        uses: devcontainers/ci@v0.3
-        with:
-          imageName: ${{ env.IMAGE_NAME }}
-          imageTag: ${{ env.IMAGE_TAG }}
-          cacheFrom: ${{ env.IMAGE_NAME }}
-          push: never
-          runCmd: make test
-
   deploy:
     runs-on: ubuntu-latest
     environment:
       name: production
       url: ${{ steps.url.outputs.url }}
-    needs: test
+    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
