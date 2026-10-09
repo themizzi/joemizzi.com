@@ -4,6 +4,11 @@
       "version": "1.9.1",
       "resolved": "ghcr.io/devcontainers/features/docker-outside-of-docker@sha256:dc89605f01ff2f24252c61f7c8ba2a58ccdbc14f2ebf87a7952d9e2b89834850",
       "integrity": "sha256:dc89605f01ff2f24252c61f7c8ba2a58ccdbc14f2ebf87a7952d9e2b89834850"
+    },
+    "ghcr.io/flexwie/devcontainer-features/op:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/flexwie/devcontainer-features/op@sha256:68098ff0ac2447bcf0eeee7ac19123bd0375fd43330ee3c9ca4dee510b74c6d3",
+      "integrity": "sha256:68098ff0ac2447bcf0eeee7ac19123bd0375fd43330ee3c9ca4dee510b74c6d3"
     }
   }
 }
