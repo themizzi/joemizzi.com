@@ -20,6 +20,9 @@
 			"version": "latest",
 			"enableNonRootDocker": "true",
 			"moby": "false"
+		},
+		"ghcr.io/devcontainers/features/github-cli": {
+			"version": "latest"
 		}
 	},
 	// Configure tool-specific properties.
