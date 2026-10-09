@@ -9,7 +9,13 @@
 {{- end -}}
 
 {{- /* Get all events and discography pages */ -}}
-{{- $events := where .Site.RegularPages "Section" "events" -}}
+{{- $eventPages := where .Site.RegularPages "Section" "events" -}}
+{{- $events := slice -}}
+{{- range $eventPages -}}
+  {{- if not .Params.super_event -}}
+    {{- $events = $events | append . -}}
+  {{- end -}}
+{{- end -}}
 {{- $allDiscography := where .Site.Pages "Section" "discography" -}}
 {{- $discography := where $allDiscography "Params.type" "album" -}}
 

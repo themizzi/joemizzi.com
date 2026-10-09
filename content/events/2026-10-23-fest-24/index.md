@@ -1,17 +1,15 @@
 +++
-artists = ['thebollweevils']
-date = 2026-05-25T00:00:00-05:00
+date = 2026-10-09T00:00:00-05:00
 draft = false
+is_super_event = true
+event_id = 'fest-24-2026'
+event_start = 2026-10-23T00:00:00-04:00
+event_end = 2026-10-25T23:59:59-04:00
+event_city = 'Gainesville, FL'
 featured_image = 'featured-image.jpg'
-link = 'https://thefestfl.com/bands/the-bollweevils/'
+link = 'https://thefestfl.com'
 locations = []
-super_event_city = 'Gainesville, FL'
-super_event_end = 2026-10-25T23:59:59-04:00
-super_event_name = 'FEST 24'
-super_event_start = 2026-10-23T00:00:00-04:00
-super_event_url = 'https://thefestfl.com'
-title = 'The Bollweevils at FEST 24'
+title = 'FEST 24'
 +++
 
-The Bollweevils will be performing at FEST 24 in Gainesville, Florida.
-Specific date, time, and venue to be announced.
+FEST 24 is a multi-day festival in Gainesville, Florida, running October 23–25, 2026. The Bollweevils' performance page is linked below; its specific date, time, and venue were not announced.

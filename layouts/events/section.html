@@ -5,14 +5,16 @@
     <!-- Pagination setup: items per page configurable via front matter -->
     {{ $perPage := default 10 .Params.paginateCount }}
     
-    {{/* Calculate effective sort date for each event - prefer doors, fallback to super_event_start */}}
+    {{/* Calculate effective sort date for standalone events and super events. */}}
     {{ $sortedPages := slice }}
     {{ range .Pages }}
+        {{ if not .Params.super_event }}
         {{ $sortDate := .Params.doors }}
-        {{ if not $sortDate }}
-            {{ $sortDate = .Params.super_event_start }}
+        {{ if .Params.is_super_event }}
+            {{ $sortDate = .Params.event_start }}
         {{ end }}
         {{ $sortedPages = $sortedPages | append (dict "Page" . "SortDate" $sortDate) }}
+        {{ end }}
     {{ end }}
     
     {{/* Sort by the effective date in descending order */}}
@@ -29,8 +31,8 @@
     {{ $eventsByYear := slice }}
     {{ range $paginator.Pages }}
         {{ $sortDate := .Params.doors }}
-        {{ if not $sortDate }}
-            {{ $sortDate = .Params.super_event_start }}
+        {{ if .Params.is_super_event }}
+            {{ $sortDate = .Params.event_start }}
         {{ end }}
         {{ $year := $sortDate | dateFormat "2006" }}
         {{ $month := $sortDate | dateFormat "January" }}
@@ -115,8 +117,8 @@
                 
                 {{ if and $locationCity $locationState }}
                 {{ $locationCity }}, {{ $locationState }}
-                {{ else if $page.Params.super_event_city }}
-                {{ $page.Params.super_event_city }}
+                {{ else if $page.Params.event_city }}
+                {{ $page.Params.event_city }}
                 {{ end }}
             </span>
             </a>
