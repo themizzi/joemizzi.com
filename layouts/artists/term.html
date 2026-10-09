@@ -1,14 +1,23 @@
 {{ define "main" }}
 <div class="container">
     <h1>{{ .Title }}</h1>
-    {{ if .Params.featured_image }}
-    {{ with .Resources.GetMatch .Params.featured_image }}
-    <div class="featured-image">
-        {{ with .Resize "600x"}}
-        <img src="{{ .RelPermalink }}" alt="{{ .Title }}" />
+    {{ $page := . }}
+    {{ with .Params.featured_image }}
+    {{ $image := $page.Resources.GetMatch . }}
+    <figure class="featured-image">
+        {{ if $image }}
+            {{ with $image.Resize "600x" }}
+        <img src="{{ .RelPermalink }}" alt="{{ $page.Title }}" />
+            {{ end }}
+        {{ else }}
+        <img src="{{ . | relURL }}" alt="{{ $page.Title }}" />
         {{ end }}
-    </div>
-    {{ end }}
+        {{ with $page.Params.image_credit }}
+        <figcaption>
+            Image: {{ if $page.Params.image_credit_url }}<a href="{{ $page.Params.image_credit_url }}" target="_blank" rel="noopener">{{ . }}</a>{{ else }}{{ . }}{{ end }}
+        </figcaption>
+        {{ end }}
+    </figure>
     {{ end }}
     {{ .Content }}
     {{ range .Pages.GroupBy "Section" }}
