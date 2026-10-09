@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     rclone \
     pup \
     jq \
+    nano \
     openssh-client \
     && rm -rf /var/lib/apt/lists/*
 
