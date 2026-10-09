@@ -20,6 +20,9 @@
 			"version": "latest",
 			"enableNonRootDocker": "true",
 			"moby": "false"
+		},
+		"ghcr.io/flexwie/devcontainer-features/op:1": {
+			"version": "latest"
 		}
 	},
 	// Configure tool-specific properties.
