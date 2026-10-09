@@ -33,26 +33,21 @@
 {{ end }}
 
 {{/* Festival/Super Event Information */}}
-{{ if $page.Params.super_event_name }}
+{{ if $page.Params.is_super_event }}
+<p>📅 <time itemprop="startDate" datetime="{{ $page.Params.event_start | dateFormat "2006-01-02T15:04:05-07:00" }}">{{ $page.Params.event_start | dateFormat "January 2, 2006" }}</time> – <time itemprop="endDate" datetime="{{ $page.Params.event_end | dateFormat "2006-01-02T15:04:05-07:00" }}">{{ $page.Params.event_end | dateFormat "January 2, 2006" }}</time></p>
+{{ else if $page.Params.super_event }}
+{{ $eventPages := where $page.Site.RegularPages "Section" "events" }}
+{{ $parent := where $eventPages "Params.event_id" "eq" $page.Params.super_event }}
+{{ with index $parent 0 }}
 <section itemprop="superEvent" itemscope itemtype="https://schema.org/MusicEvent">
     <h2 class="visually-hidden">Festival details</h2>
-    <link itemprop="url" href="{{ $page.Params.super_event_url }}" />
-    <meta itemprop="name" content="{{ $page.Params.super_event_name }}" />
-    <meta itemprop="startDate" content="{{ $page.Params.super_event_start | dateFormat "2006-01-02T15:04:05-07:00" }}" />
-    <meta itemprop="endDate" content="{{ $page.Params.super_event_end | dateFormat "2006-01-02T15:04:05-07:00" }}" />
-    <p>🎪 <a href="{{ $page.Params.super_event_url }}" target="_blank">{{ $page.Params.super_event_name }}</a>: 
-    {{ $startMonth := $page.Params.super_event_start | dateFormat "January" }}
-    {{ $endMonth := $page.Params.super_event_end | dateFormat "January" }}
-    {{ $startDay := $page.Params.super_event_start | dateFormat "2" }}
-    {{ $endDay := $page.Params.super_event_end | dateFormat "2" }}
-    {{ $year := $page.Params.super_event_start | dateFormat "2006" }}
-    {{ if eq $startMonth $endMonth }}
-        {{ $startMonth }} {{ $startDay }}-{{ $endDay }}, {{ $year }}
-    {{ else }}
-        {{ $startMonth }} {{ $startDay }} - {{ $endMonth }} {{ $endDay }}, {{ $year }}
-    {{ end }}
-    </p>
+    <link itemprop="url" href="{{ .RelPermalink }}" />
+    <meta itemprop="name" content="{{ .Title }}" />
+    <meta itemprop="startDate" content="{{ .Params.event_start | dateFormat "2006-01-02T15:04:05-07:00" }}" />
+    <meta itemprop="endDate" content="{{ .Params.event_end | dateFormat "2006-01-02T15:04:05-07:00" }}" />
+    <p>🎪 Part of <a href="{{ .RelPermalink }}">{{ .Title }}</a></p>
 </section>
+{{ end }}
 {{ end }}
 
 {{/* Event Date/Time */}}
@@ -62,10 +57,8 @@
     {{ else }}
 <p>📅 <time datetime="{{ $page.Params.doors | dateFormat "2006-01-02T15:04:05-07:00" }}" itemprop="startDate">{{ $page.Params.doors | dateFormat "January 2, 2006" }}, doors: {{ $page.Params.doors | dateFormat "3:04PM" }}</time></p>
     {{ end }}
-{{ else if $page.Params.super_event_start }}
-<p>📅 Performance date/time: <strong>TBA</strong></p>
-{{ else }}
-<p>📅 <strong>ERROR: Event must have either 'doors' or 'super_event_start' field</strong></p>
+{{ else if $page.Params.is_super_event }}
+{{/* The festival's own date range is shown above. */}}
 {{ end }}
 
 <section itemprop="location" itemscope itemtype="https://schema.org/MusicVenue">
@@ -79,6 +72,15 @@
     {{ $locationLink := "" }}
     {{ $hasLocationTaxonomy := false }}
     {{ $hasLocation := false }}
+    {{ $eventCity := $page.Params.event_city }}
+
+    {{ if $page.Params.super_event }}
+        {{ $eventPages := where $page.Site.RegularPages "Section" "events" }}
+        {{ $parentEvents := where $eventPages "Params.event_id" "eq" $page.Params.super_event }}
+        {{ with index $parentEvents 0 }}
+            {{ $eventCity = .Params.event_city }}
+        {{ end }}
+    {{ end }}
     
     {{ with $page.GetTerms "locations" }}
         {{ range . }}
@@ -126,7 +128,7 @@
         {{ end }}
     {{ else }}
         {{/* No location specified - show TBA */}}
-        <p>🏛️ Venue: <strong>TBA</strong>{{ if $page.Params.super_event_city }} ({{ $page.Params.super_event_city }}){{ end }}</p>
+        <p>🏛️ Venue: <strong>TBA</strong>{{ if $eventCity }} ({{ $eventCity }}){{ end }}</p>
     {{ end }}
 </section>
 {{ with $page.Params.link }}
@@ -146,4 +148,22 @@
 <div class="event-content">
     {{ $page.Content }}
 </div>
+{{ end }}
+
+{{ if $page.Params.is_super_event }}
+{{ $eventPages := where $page.Site.RegularPages "Section" "events" }}
+{{ $childEvents := where $eventPages "Params.super_event" "eq" $page.Params.event_id }}
+{{ if $childEvents }}
+<section class="sub-events">
+    <h2>Festival Days and Performances</h2>
+    <ul>
+    {{ range sort $childEvents "Params.doors" "asc" }}
+        <li itemprop="subEvent" itemscope itemtype="https://schema.org/MusicEvent">
+            <a href="{{ .RelPermalink }}" itemprop="url"><span itemprop="name">{{ .Title }}</span></a>
+            {{ with .Params.doors }}<time itemprop="startDate" datetime="{{ . | dateFormat "2006-01-02T15:04:05-07:00" }}"> — {{ . | dateFormat "Monday, January 2, 2006" }}</time>{{ end }}
+        </li>
+    {{ end }}
+    </ul>
+</section>
+{{ end }}
 {{ end }}
