@@ -86,8 +86,10 @@
 {{ with resources.Get "scripts/main.ts" | js.Build -}}
 <script src='{{ .RelPermalink }}'></script>
 {{- end }}
+{{- if not hugo.IsServer }}
 <script src="/js/gtag.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SMLSEPRS2B"></script>
+{{- end }}
 
 {{- /* Additional Meta Tags */}}
 <link rel="manifest" href="/site.webmanifest">
