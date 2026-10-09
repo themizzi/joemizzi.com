@@ -262,6 +262,17 @@ h1:first-child {
   background-color: #000;
 }
 
+.featured-image {
+  width: 100%;
+  margin: 0 0 1rem;
+}
+
+.featured-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .container.page img {
   width: 100%;
   height: auto;
